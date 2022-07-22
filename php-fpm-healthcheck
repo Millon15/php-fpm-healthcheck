@@ -12,8 +12,8 @@ if (!in_array(PHP_SAPI, ['cli', 'phpdbg', 'embed'], true)) {
 }
 
 $argv = $argv ?? $_SERVER['argv'] ?? [];
-$opts = getopt('h',['help', 'usage'], $rest);
-if (array_intersect(array_keys($opts), ['h', 'help', 'usage']) || count($argv) === 1) {
+$opts = getopt('h', ['help', 'usage'], $rest);
+if (1 === count($argv) || array_intersect(array_keys($opts), ['h', 'help', 'usage'])) {
     echo "Usage ${argv[0]} tcp://127.0.0.1:9000/ping\n\n";
     die(0);
 }
@@ -259,7 +259,9 @@ $fastCgi = new class ($argv[1] ?? 'tcp://127.0.0.1/ping') {
     /** @return resource */
     private function socket()
     {
-        $errno = $error = null;
+        $errno = null;
+        $error = null;
+
         if (!$this->socket) {
             $this->socket = stream_socket_client($this->address, $errno, $error);
         }
